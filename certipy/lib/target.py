@@ -243,7 +243,6 @@ class Target:
             )
 
         if remote_name is None:
-            print('hi')
             if options.target_ip:
                 remote_name = options.target_ip
             elif dc_host:

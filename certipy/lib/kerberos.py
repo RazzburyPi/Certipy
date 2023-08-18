@@ -80,8 +80,6 @@ def get_TGS(
 
             logging.debug("Using Kerberos Cache: %s" % os.getenv("KRB5CCNAME"))
             principal = "%s/%s@%s" % (service, target_name.upper(), domain.upper())
-            print('hola')
-            print(principal)
             creds = ccache.getCredential(principal, anySPN=False)
             if creds is None:
                 # Let's try for the TGT and go from there
