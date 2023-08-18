@@ -40,7 +40,6 @@ from certipy.lib.target import Target
 
 from .ca import CA
 
-
 def _http_request(self, method, url, body=None, headers=None):
     if headers is None:
         headers = {}

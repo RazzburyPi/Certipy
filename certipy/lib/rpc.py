@@ -6,6 +6,9 @@ from certipy.lib.kerberos import get_TGS
 from certipy.lib.logger import logging
 from certipy.lib.target import Target
 
+from impacket.dcerpc.v5.rpcrt import TypeSerialization1, RPC_C_AUTHN_LEVEL_PKT_INTEGRITY, RPC_C_AUTHN_LEVEL_NONE, \
+    RPC_C_AUTHN_LEVEL_PKT_PRIVACY, RPC_C_AUTHN_GSS_NEGOTIATE, RPC_C_AUTHN_WINNT, DCERPCException
+
 
 def get_dcom_connection(target: Target) -> DCOMConnection:
     TGS = None
@@ -49,9 +52,10 @@ def get_dce_rpc_from_string_binding(
     if remote_name is None:
         remote_name = target.remote_name
 
+
     rpctransport = transport.DCERPCTransportFactory(string_binding)
 
-    rpctransport.setRemoteHost(target_ip)
+    '''rpctransport.setRemoteHost(target_ip)
     rpctransport.setRemoteName(remote_name)
 
     rpctransport.set_connect_timeout(timeout)
@@ -75,14 +79,18 @@ def get_dce_rpc_from_string_binding(
         target.lmhash,
         target.nthash,
         TGS=TGS,
-    )
+    )'''
+
+    rpctransport.setRemoteName(remote_name)
+    rpctransport.set_credentials(target.username, target.password, target.domain, target.lmhash, target.nthash)
+    rpctransport.set_kerberos(target.do_kerberos, None) 
 
     dce = rpctransport.get_dce_rpc()
     dce.set_auth_level(auth_level)
 
     if target.do_kerberos is True:
         dce.set_auth_type(rpcrt.RPC_C_AUTHN_GSS_NEGOTIATE)
-
+   
     return dce
 
 
@@ -142,7 +150,7 @@ def get_dce_rpc(
         logging.debug("Connected to endpoint: %s" % string_binding)
 
         dce.bind(interface)
-
+        
         return dce
 
     def _try_np() -> rpcrt.DCERPC_v5:
