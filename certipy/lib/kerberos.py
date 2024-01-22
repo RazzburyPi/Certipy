@@ -176,7 +176,7 @@ def get_TGS(
                     "Getting TGS for %s" % repr("%s/%s" % (service, target_name))
                 )
                 tgs, cipher, _, session_key = getKerberosTGS(
-                    server_name, domain, 'ILVERMORNY.LOCAL', tgt, cipher, session_key
+                    server_name, domain, kdcHost, tgt, cipher, session_key
                 )
 
                 logging.debug("Got TGS for %s" % repr("%s/%s" % (service, target_name)))
